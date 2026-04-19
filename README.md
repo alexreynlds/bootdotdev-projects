@@ -4,6 +4,6 @@ A collection of projects built while working through [Boot.dev](https://www.boot
 
 ## Projects
 
-| Project              | Description                                                                                    |
-| -------------------- | ---------------------------------------------------------------------------------------------- |
-| [Bookbot](./bookbot) | A Python program that takes a book as input and returns a count of each letter in the alphabet |
+| Project              | Description                                                                                                          |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [Bookbot](./bookbot) | A Python program that takes a book as input and returns a list of how many times each alphabetical character appears |
