@@ -2,11 +2,24 @@ import random
 
 
 class Enemy:
-    def __init__(self, name, attack, health, armor):
+    def __init__(self, name, attack, health, mana, stamina, armor, speed):
         self.name = name
-        self.attack_power = attack
+
+        self.max_health = health
+        self.max_mana = mana
+        self.max_stamina = stamina
+
         self.health = health
+        self.mana = mana
+        self.stamina = stamina
+
+        self.attack_power = attack
         self.armor = armor
+        self.speed = speed
+
+        # modifiers
+        self.is_blocking = False
+
         self.actions = {
             "Attack": {"category": "main", "fn": self.attack},
         }
@@ -28,5 +41,5 @@ class Enemy:
 
 class Goblin(Enemy):
     def __init__(self):
-        super().__init__("Goblin", 1, 10, 0)
+        super().__init__("Goblin", 1, 10, 0, 5, 0, 2)
         self.speed = 2
