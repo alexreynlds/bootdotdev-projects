@@ -1,32 +1,50 @@
+import os
 from screens.welcome import welcome_screen
-from screens.round import print_round
+from screens.turn import print_turn
 from player import Player
 from enemy import Goblin
 
 
-def do_round(player, enemy, round):
-    print(f"{player.name} is faced against a {enemy.name}")
-    print("What do you want to do?\n[1] Attack")
-    choice = input(": ")
-    print(choice)
+def do_round(player, enemy, turn, prev_turn_log):
+    print_turn(turn, player, enemy, prev_turn_log)
+    turn_log = list()
+    while True:
+        choice = int(input(": "))
+        if choice < 1 or choice > len(player.actions):
+            print("Invalid option")
+        else:
+            break
+    action_name = list(player.actions.keys())[choice - 1]
+    action_function = player.actions[action_name]["fn"]
 
-    # if choice == "1":
-    #     print("attacking")
-    #     player.attack(enemy)
+    if player.speed > enemy.speed:
+        turn_log.append(action_function(enemy))
+        turn_log.append(enemy.do_turn(player))
+    else:
+        turn_log.append(enemy.do_turn(player))
+        turn_log.append(action_function(enemy))
 
-    round_log = {"Alex attacked", "goblin Attacked", "goblin died"}
-
-    print_round(round, player, enemy, round_log)
+    return turn_log
 
 
 def main():
+    clear = lambda: os.system("clear")
     player = Player(welcome_screen())
     enemy = Goblin()
     round = 0
     playing = True
 
+    # round
     while playing:
-        do_round(player, enemy, round)
+        turn = 0
+        playing_turn = True
+        prev_turn_log = list()
+
+        while playing_turn:
+            clear()
+            prev_turn_log = do_round(player, enemy, turn, prev_turn_log)
+            turn += 1
+
         round += 1
 
 
