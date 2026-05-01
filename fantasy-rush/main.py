@@ -34,6 +34,7 @@ def do_turn(player, enemy, round, turn, prev_turn_log):
         else:
             break
 
+    # If the action is block, do it first
     if action_name == "Block":
         turn_log.append(action_function(enemy))
         turn_log.append(enemy.do_turn(player))

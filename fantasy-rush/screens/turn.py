@@ -18,7 +18,9 @@ def print_turn(round, turn, player, enemy, turn_log):
         "HP", str(player.health), "Crit chance", str(player.crit_chance)
     )
     player_table.add_row("Stamina", str(player.stamina), "Speed", str(player.speed))
-    player_table.add_row("Mana", str(player.mana))
+    player_table.add_row(
+        "Mana", str(player.mana), "Evasion", str(player.evasion * 100) + "%"
+    )
 
     # Enemy Stats
     enemy_table = Table(title=enemy.name, show_header=False, border_style="blue")
@@ -34,7 +36,7 @@ def print_turn(round, turn, player, enemy, turn_log):
     # Creating the turn log from the previous turns data
     log_table = Table(title="Turn Log", show_header=False, border_style="red")
     for log in turn_log:
-        log_table.add_row(str(log))
+        log_table.add_row("> " + str(log))
 
     # Displaying all of the possible actions the player can take
     actions_table = Table(title="Actions", show_header=True, border_style="blue")
@@ -42,7 +44,10 @@ def print_turn(round, turn, player, enemy, turn_log):
 
     for i, (name, action) in enumerate(player.actions.items(), start=1):
         cat = action["category"]
-        categories[cat].append(f"[{i}] {name}")
+        cost = action["cost"]
+        cost_label = f"{cost} {cat}" if cost > 0 else "Free"
+        entry = f"[{i}] {name} - {cost_label}\n    - {action["desc"]}"
+        categories[cat].append(entry)
 
     # Get the longest category list to determine the max row (col height)
     max_rows = max(len(v) for v in categories.values())

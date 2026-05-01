@@ -28,6 +28,15 @@ class Enemy:
         action_int = random.randint(1, len(self.actions))
         action_name = list(self.actions.keys())[action_int - 1]
         action_function = self.actions[action_name]["fn"]
+
+        if other.is_blocking:
+            other.is_blocking = False
+            return f"{self.name} tried to {action_name}, but failed as {other.name} was blocking!"
+
+        evasion_check = random.randint(0, 1)
+        if evasion_check <= other.evasion:
+            return f"{self.name} tried to {action_name}, but {other.name} evaded the attack"
+
         return action_function(other)
 
     def attack(self, other):

@@ -12,9 +12,12 @@
 
 ## Day 2 - Friday 1st May
 
-- Basic combat now works, take turns to attack eachother with basic attack
-- Added an action list to players and enemys for different actions (main, stamina, magic) which could allow me to extend them in the future
-- Added some QoL to make it easier for the user to understand whats happening
-  - Renamed round to turns: turns will be in a battle, rounds will be an enemy encounter
+- Basic combat now works, you can defeat enemies with attacks (ones that have been defined, not all of them so far), block attacks and an evasion system
+- Added an action list for player actions
+- Actions take up resources
+- QoL:
+  - Renamed to turns, turns will be moves in a battle, rounds will be a single battle
   - Clear the terminal before printing the round to make it clearer
-  - Display possible actions in the printout
+  - Prints out action list including cost and descriptions
+- Still need to do random rolling for enemies before rounds and round rewards
+- Things are taking shape nicely though!
