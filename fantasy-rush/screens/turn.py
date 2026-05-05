@@ -15,20 +15,31 @@ def print_turn(round, turn, player, enemy, turn_log):
     player_table.add_column("Stat2", style="cyan")
     player_table.add_column("Value2", style="white")
     player_table.add_row(
-        "HP", str(player.health), "Crit chance", str(player.crit_chance)
+        "HP",
+        f"{str(player.health)}/{str(player.max_health)}",
+        "Crit chance",
+        str(player.crit_chance),
     )
-    player_table.add_row("Stamina", str(player.stamina), "Speed", str(player.speed))
     player_table.add_row(
-        "Mana", str(player.mana), "Evasion", str(player.evasion * 100) + "%"
+        "Stamina",
+        f"{str(player.stamina)}/{str(player.max_stamina)}",
+        "Speed",
+        str(player.speed),
+    )
+    player_table.add_row(
+        "Mana",
+        f"{str(player.mana)}/{str(player.max_mana)}",
+        "Evasion",
+        str(player.evasion * 100) + "%",
     )
 
     # Enemy Stats
     enemy_table = Table(title=enemy.name, show_header=False, border_style="blue")
     enemy_table.add_column("Stat", style="cyan")
     enemy_table.add_column("Value", style="white")
-    enemy_table.add_row("HP", str(enemy.health))
-    enemy_table.add_row("Stamina", str(enemy.stamina))
-    enemy_table.add_row("Mana", str(enemy.mana))
+    enemy_table.add_row("HP", f"{str(enemy.health)}/{str(enemy.max_health)}")
+    enemy_table.add_row("Stamina", f"{str(enemy.stamina)}/{str(enemy.max_stamina)}")
+    enemy_table.add_row("Mana", f"{str(enemy.mana)}/{str(enemy.max_mana)}")
 
     # Organising the stats into side-by-side columns
     columns = Columns([player_table, enemy_table], expand=True, padding=(0, 10))

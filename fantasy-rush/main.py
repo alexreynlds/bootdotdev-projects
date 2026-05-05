@@ -1,15 +1,28 @@
 import os
 import sys
+import random
 from screens.welcome import welcome_screen
 from screens.turn import print_turn
+from screens.shop import print_shop
 from player import Player
-from enemy import Goblin
+from enemy import regular_enemies, boss_enemies
+
+
+def generate_enemy(round):
+    if round == 10 or round == 20:
+        # boss round
+        enemy_class = random.choice(boss_enemies)
+        return enemy_class()
+    else:
+        enemy_class = random.choice(regular_enemies)
+        return enemy_class()
 
 
 def do_turn(player, enemy, round, turn, prev_turn_log):
     round_over = False
     # Print the turn screen with the previous round log
     print_turn(round, turn, player, enemy, prev_turn_log)
+    # print_shop(player)
 
     turn_log = list()
 
@@ -33,6 +46,8 @@ def do_turn(player, enemy, round, turn, prev_turn_log):
             print("Not enough mana")
         else:
             break
+
+    player.pay_cost(player.actions[action_name])
 
     # If the action is block, do it first
     if action_name == "Block":
@@ -63,7 +78,10 @@ def main():
     # round
     while playing:
         turn = 0
-        enemy = Goblin()
+        if round in [0, 5, 10, 15]:
+            print_shop(player)
+
+        enemy = generate_enemy(round)
 
         round_over = False
         playing_turn = True
@@ -83,14 +101,23 @@ def main():
         # Player completes round - defeats enemy or dies
         clear()
 
+        # If the player died - end the game
         if player.health <= 0:
             print("GAME OVER")
             sys.exit()
 
-        print(f"Congratulations, you beat {enemy.name}!")
-        input("Press Enter to continue...")
+        # Otherwise, reward them with gold, partially regen their stats and proceed to next round
+        print(
+            f"Congratulations, you beat {enemy.name}! You earned {enemy.gold_reward} gold!"
+        )
+        player.gold += enemy.gold_reward
+
+        player.health = min(player.health + 3, player.max_health)
+        player.stamina = min(player.stamina + 2, player.max_stamina)
+        player.mana = min(player.max_mana + 2, player.max_mana)
 
         round += 1
+        input(f"Press Enter to continue to round {round}...")
 
 
 if __name__ == "__main__":
