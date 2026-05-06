@@ -28,3 +28,13 @@
 - Ive added a second enemy type (hydra) and created a generate enemy function in main that will pick an enemy at the start of a round (so we dont get all goblins)
 - Decided the game will be 20 rounds long, 10 and 20 will be boss rounds
 - Enemies now award gold and their actions now have resource cost (they will only use an action they can afford)
+
+## Day 4 - Tuesday 5th May
+
+- Today I worked on the shop implementation! Items can now be bought for bonuses to the player!
+- I also added boss rounds, 10 and 20 (final) and enemies now drop gol
+
+## Day 5 - Wednesday 6th May
+
+- Added a helper function to add to log
+- Added a pheonix boss

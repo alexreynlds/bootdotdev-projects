@@ -6,24 +6,24 @@ class Player:
         self.name = name
         self.inventory = {}
 
-        self.max_health = 10
-        self.max_mana = 5
-        self.max_stamina = 5
+        self.max_health = 30
+        self.max_mana = 10
+        self.max_stamina = 10
 
-        self.health = 10
-        self.mana = 5
-        self.stamina = 5
+        self.health = self.max_health
+        self.mana = self.max_mana
+        self.stamina = self.max_stamina
 
-        self.attack_power = 2
-        self.armor = 1
+        self.attack_power = 3
         self.crit_chance = 0.10
         self.speed = 5
-        self.evasion = 0.01
+        self.evasion = 0.05
 
         # modifiers
         self.is_blocking = False
+        self.is_dodging = False
 
-        self.gold = 50
+        self.gold = 5
 
         self.actions = {
             "Attack": {
@@ -35,7 +35,7 @@ class Player:
             "Heavy Attack": {
                 "category": "stamina",
                 "fn": self.heavy_attack,
-                "cost": 2,
+                "cost": 3,
                 "desc": "Empower your blow with stamina",
             },
             "Block": {
@@ -46,9 +46,9 @@ class Player:
             },
             "Dodge": {
                 "category": "stamina",
-                "fn": self.attack,
+                "fn": self.dodge,
                 "cost": 1,
-                "desc": "Attempt to dodge your opponents next attack",
+                "desc": "Attempt to dodge your opponents next attack (50/50)",
             },
         }
 
@@ -61,53 +61,74 @@ class Player:
         elif cat == "mana":
             self.mana -= cost
 
-    def do_turn(self, other):
-        action_int = random.randint(1, len(self.actions))
-        action_name = list(self.actions.keys())[action_int - 1]
-        action_function = self.actions[action_name]["fn"]
-        return action_function(other)
-
     def attack(self, other):
-        crit_roll = random.randint(0, 1)
+        crit_roll = random.random()
         attack_amount = random.randint(1, self.attack_power)
 
         if crit_roll <= self.crit_chance:
             attack_amount *= 2
-            other.take_damage(attack_amount)
-            return f"CRIT! {self.name} attacks {other.name} for {attack_amount} damage"
+            msg = other.take_damage(attack_amount)
+            result = (
+                f"CRIT! {self.name} attacks {other.name} for {attack_amount} damage"
+            )
+
+            if msg:
+                return [result, msg]
+            return result
         else:
-            other.take_damage(attack_amount)
-            return f"{self.name} attacks {other.name} for {attack_amount} damage"
+            msg = other.take_damage(attack_amount)
+            result = f"{self.name} attacks {other.name} for {attack_amount} damage"
+
+            if msg:
+                return [result, msg]
+            return result
 
     def heavy_attack(self, other):
-        crit_roll = random.randint(0, 1)
-        attack_amount = random.randint(self.attack_power, self.attack_power * 3)
+        crit_roll = random.random()
+        attack_amount = random.randint(self.attack_power, self.attack_power * 2)
 
         if crit_roll <= self.crit_chance:
             attack_amount *= 2
-            other.take_damage(attack_amount)
-            return f"CRIT! {self.name} hits {other.name} with a heavy attack for {attack_amount} damage"
+            msg = other.take_damage(attack_amount)
+            result = f"CRIT! {self.name} hits {other.name} with a heavy attack for {attack_amount} damage"
+
+            if msg:
+                return [result, msg]
+            return result
         else:
-            other.take_damage(attack_amount)
-            return f"{self.name} hits {other.name} with a heavy attack for {attack_amount} damage"
+            msg = other.take_damage(attack_amount)
+            result = f"{self.name} hits {other.name} with a heavy attack for {attack_amount} damage"
+
+            if msg:
+                return [result, msg]
+            return result
 
     def block(self, other):
-        if self.stamina >= 2:
-            self.stamina -= 2
-            self.is_blocking = True
-            return f"{self.name} prepares to block {other.name}'s attack"
+        self.is_blocking = True
+        return f"{self.name} prepares to block {other.name}'s attack"
+
+    def dodge(self, other):
+        self.is_dodging = True
+        return f"{self.name} prepares to dodge {other.name}'s attack"
+
+    def fire(self, other):
+        attack_amount = random.randint(5, 10)
+        msg = other.take_damage(attack_amount)
+        result = f"{self.name} blasts {other.name} with fire for {attack_amount} damage"
+
+        if msg:
+            return [result, msg]
+        return result
 
     def heal(self, other):
-        heal_amount = random.randint(1, self.max_health // 4)
-        new_health = self.health + heal_amount
+        heal_amount = random.randint(self.max_health // 4, self.max_health // 3)
 
-        if new_health > self.max_health:
-            self.health = self.max_health
-        else:
-            self.health += heal_amount
+        actual = min(self.health + heal_amount, self.max_health) - self.health
+
+        self.health += actual
 
         # self.health += heal_amount
-        return f"{self.name} heals themselves for {heal_amount} HP"
+        return f"{self.name} heals themselves for {actual} HP"
 
     def take_damage(self, amount):
         self.health -= amount
